@@ -1,8 +1,9 @@
 import pygame
+import sys
 
 pygame.init()
-xd = 1440
-yd = 1440
+xd = 1080
+yd = 1080
 screen = pygame.display.set_mode((xd,yd))
 
 def put_pix(x,y,c):
@@ -37,8 +38,8 @@ def render(cn):
 		pygame.display.update()
 
 
-cn1 = float(input("enter a number"))
-cn2 = float(input("enter another number"))
+cn1 = float(sys.argv[1])
+cn2 = float(sys.argv[2])
 cn = complex(cn1,cn2)
 render(cn)
 pygame.display.update()

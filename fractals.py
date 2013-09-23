@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import pygame
 import sys
 
@@ -20,27 +21,70 @@ def f(z,c,d):
 	else:
 		return 1 + f(z,c,d-1)
 
-def normalize(z,zd):	
-	return 4.0*z/zd
+def normalize(z,zd, zoom):	
+	return float(zoom)*2.0*float(z)/float(zd)
 
 
 
-def render(cn):
+
+def printvector3(x,y,z,c):
+    camera = (0.,0.,-1.)
+    d = (x-camera[0], y-camera[1], z-camera[2])
+    b = [0.,0.]
+    b[0] = (-2.0 / d[2] ) * d[0] - 0;
+    b[1] = (-2.0 / d[2] ) * d[1] - 0;
+    b[0] = b[0] * 100
+    b[1] = b[1] * 100
+    put_pix(int(b[0]), int(b[1]), depth(z,c))
+
+def depth (z,(r,g,b)):
+    z = int(z)
+    r -= z
+    if r < 0:
+        r = 0;
+    if g < 0:
+        g = 0;
+    if b < 0:
+        b = 0;
+    return (r,g,b)
+
+
+
+
+def render(cn, zoomfactor):
 	for x in range(-xd/2,xd/2):
 		for y in range(-yd/2,yd/2):
-			temp = complex(normalize(x,xd), normalize(y,yd))
+			temp = complex(normalize(x,xd,zoomfactor), normalize(y,yd,zoomfactor))
 			c = f(temp,cn,511) #512-1
 			r = 2 * (c % 64)
 			g = 2 * ((c >> 3)% 64)
 			b = 2 * ((c >> 6)% 64)
 			color = (r,g,b)
-			put_pix(x,y,color)
+			put_pix(int(x),int(y),color)
 		pygame.display.update()
 
 
-cn1 = float(sys.argv[1])
-cn2 = float(sys.argv[2])
-cn = complex(cn1,cn2)
-render(cn)
+def drawvec(x,y,z, dx,dy,dz):
+
+    for i in range(0,100,1):
+        di = float(i) /100
+        printvector3(x + di*dx, y + di*dy, z+ di*dz, (255,0,0))
+    
+
+
+def cube():
+    drawvec(-.5,.5,-.5,      .5,.5,-.5);
+    drawvec(-.5,.5,.5,      .5,.5,.5);    
+
+
+#cn1 = float(sys.argv[1])
+#cn2 = float(sys.argv[2])
+if (len(sys.argv)> 3):
+	zoomfactor = sys.argv[3]
+else:
+	zoomfactor = 2.0
+#cn = complex(cn1,cn2)
+#render(cn,zoomfactor)
+cube()
 pygame.display.update()
 input()

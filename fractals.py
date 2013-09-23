@@ -35,17 +35,24 @@ def printvector3(x,y,z,c):
     b[1] = (-2.0 / d[2] ) * d[1] - 0;
     b[0] = b[0] * 100
     b[1] = b[1] * 100
-    put_pix(int(b[0]), int(b[1]), depth(z,c))
+    put_pix(int(b[0]), int(b[1]), depth(z,c[0],c[1],c[2]))
 
-def depth (z,(r,g,b)):
-    z = int(z)
+def depth (z,r,g,b):
+    z = int(z * 250)
     r -= z
+    b += z
+    print(r)
+    print(z)
+    if r > 255:
+        r = 255
     if r < 0:
-        r = 0;
+        r = 0
     if g < 0:
-        g = 0;
+        g = 0
     if b < 0:
-        b = 0;
+        b = 0
+    if b > 255:
+        b = 255
     return (r,g,b)
 
 
@@ -66,16 +73,30 @@ def render(cn, zoomfactor):
 
 def drawvec(x,y,z, dx,dy,dz):
 
-    for i in range(0,100,1):
-        di = float(i) /100
-        printvector3(x + di*dx, y + di*dy, z+ di*dz, (255,0,0))
+    for i in range(0,400,1):
+        di = float(i) /400
+        printvector3(x + di*(dx-x), y + di*(dy-y), z+ di*(dz-z), (128,128,0))
     
 
 
 def cube():
+    #topface
     drawvec(-.5,.5,-.5,      .5,.5,-.5);
-    drawvec(-.5,.5,.5,      .5,.5,.5);    
+    drawvec(-.5,.5,.5,      .5,.5,.5);
+    drawvec(-.5,.5,.5,      -.5,.5,-.5);
+    drawvec(.5,.5,.5,      .5,.5,-.5);
+    
+    #bottomface
+    drawvec(-.5,-.5,-.5,      .5,-.5,-.5);
+    drawvec(-.5,-.5,.5,      .5,-.5,.5);
+    drawvec(-.5,-.5,.5,      -.5,-.5,-.5);
+    drawvec(.5,-.5,.5,      .5,-.5,-.5);
 
+    #sidelines
+    drawvec(-.5,.5,-.5,      -.5,-.5,-.5);
+    drawvec(-.5,.5,.5,      -.5,-.5,.5);
+    drawvec(.5,.5,.5,      .5,-.5,.5);
+    drawvec(.5,-.5,-.5,    .5,.5,-.5)
 
 #cn1 = float(sys.argv[1])
 #cn2 = float(sys.argv[2])
